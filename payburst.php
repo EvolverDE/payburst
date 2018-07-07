@@ -59,7 +59,7 @@
 		var timer;
 		var resp;
 		function reload() {
-			var refresh 
+			var refresh;
 			if (window.XMLHttpRequest) {
 				refresh = new XMLHttpRequest();
 				refresh.onreadystatechange = function () {
