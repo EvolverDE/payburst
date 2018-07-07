@@ -59,43 +59,41 @@
 		var timer;
 		var resp;
 		function reload() {
-			var refresh;
+			var refresh 
 			if (window.XMLHttpRequest) {
 				refresh = new XMLHttpRequest();
-			} else {
-				refresh = new ActiveXObject("Microsoft.XMLHTTP");
-			}
-			refresh.onreadystatechange = function () {
-				if (refresh.readyState == XMLHttpRequest.DONE && refresh.status == 200) {
-					resp = refresh.responseText;
-					var obj = JSON.parse(resp);
-					if (obj.status == "confirmed") {
-						// redirect to OK-Page
-						document.getElementById("paysatatus").innerHTML = "payment ok";
-						//window.location.replace('https://your-ok-page.com');
-					} else if (obj.status == "overpayed"){
-						// redirect to OK-Page
-						document.getElementById("paysatatus").innerHTML = "overpayed";
-						//window.location.replace('https://your-ok-page.com');
-					} else if (obj.status == "underpayed"){
-						// redirect to fail-Page
-						document.getElementById("paysatatus").innerHTML = "underpayed";
-						//window.location.replace('https://your-fail-page.com');
-					} else if (obj.status == "timeout"){
-						// redirect to fail-page
-						document.getElementById("paysatatus").innerHTML = "timeout";
-						//window.location.replace('https://your-fail-page.com');
-					} else {
-						var date = new Date(null);
-						date.setSeconds(obj.time);
-						var timeString = date.toISOString().substr(14, 5);
-						document.getElementById("paysatatus").innerHTML = obj.status + ", " + timeString;
+				refresh.onreadystatechange = function () {
+					if (refresh.readyState == XMLHttpRequest.DONE && refresh.status == 200) {
+						resp = refresh.responseText;
+						var obj = JSON.parse(resp);
+						if (obj.status == "confirmed") {
+							// redirect to OK-Page
+							document.getElementById("paysatatus").innerHTML = "payment ok";
+							//window.location.replace('https://your-ok-page.com');
+						} else if (obj.status == "overpayed"){
+							// redirect to OK-Page
+							document.getElementById("paysatatus").innerHTML = "overpayed";
+							//window.location.replace('https://your-ok-page.com');
+						} else if (obj.status == "underpayed"){
+							// redirect to fail-Page
+							document.getElementById("paysatatus").innerHTML = "underpayed";
+							//window.location.replace('https://your-fail-page.com');
+						} else if (obj.status == "timeout"){
+							// redirect to fail-page
+							document.getElementById("paysatatus").innerHTML = "timeout";
+							//window.location.replace('https://your-fail-page.com');
+						} else {
+							var date = new Date(null);
+							date.setSeconds(obj.time);
+							var timeString = date.toISOString().substr(14, 5);
+							document.getElementById("paysatatus").innerHTML = obj.status + ", " + timeString;
+						}
 					}
 				}
+				refresh.open("POST", "http://127.0.0.1/payburst/payburstprocess.php", true);
+				refresh.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+				refresh.send("htrq=getPayStatus&payticket=<?php echo $payticket; ?>");
 			}
-			refresh.open("POST", "http://127.0.0.1/payburst/payburstprocess.php", true);
-			refresh.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-			refresh.send("htrq=getPayStatus&payticket=<?php echo $payticket; ?>");
 			timer = setTimeout ( "reload()", 3000 );
 		}
 		reload();
